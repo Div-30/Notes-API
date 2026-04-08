@@ -29,7 +29,7 @@ def get_note(id: int):
     for note in notes:
         if note["id"] == id:
             return note
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Note of the {id} is not found")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Note of the id {id} is not found")
 
 @router.patch("/{id}", response_model=schemas.NoteResponse)
 def update_note(id: int, updated_note: schemas.NoteUpdate):
@@ -38,7 +38,7 @@ def update_note(id: int, updated_note: schemas.NoteUpdate):
             update_data = updated_note.model_dump(exclude_unset=True)
             note.update(update_data)
             return note
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Note of the {id} is not found")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Note of the id {id} is not found")
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_note(id: int):
@@ -46,6 +46,6 @@ def delete_note(id: int):
         if note["id"] == id:
             notes.pop(i)
             return Response(status_code=status.HTTP_204_NO_CONTENT)
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Note of the {id} is not found")
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Note of the id {id} is not found")
     
 
