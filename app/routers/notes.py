@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import APIRouter, HTTPException, Response, status
 from datetime import datetime
 
@@ -10,8 +11,10 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=list[schemas.NoteResponse])
-def get_notes():
-    return notes
+def get_notes(limit: int = 5, skip: int = 0, search: Optional[str] = ""):
+    filtered_notes = [notes for notes in notes if search.lower() in notes['title'].lower()]
+    paginated_notes = filtered_notes[skip : skip + limit]
+    return paginated_notes
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.NoteResponse)
 def create_post(note: schemas.NoteCreate):
