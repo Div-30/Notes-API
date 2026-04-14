@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, HTTPException, Response, status, BackgroundTasks
 from app.service import note_service
+from datetime import datetime
 from app import schemas
 
 router = APIRouter(
@@ -10,17 +11,17 @@ router = APIRouter(
 
 @router.get("/", response_model=list[schemas.NoteResponse])
 def get_note(limit: int = 5, skip: int = 0, search: Optional[str] = ""):
-    return note_service.filter_and_paginated_notes(search, skip, limit)
+    return note_service.filter_and_paginated_notes(search, limit, skip)
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.NoteResponse)
 def create_note(note: schemas.NoteCreate, background_tasks: BackgroundTasks):
     note_dict = note.model_dump()
     note_dict["id"] = len(note_service.notes_db) + 1
+    note_dict["created_at"] = datetime.now()
     note_service.notes_db.append(note_dict)
     background_tasks.add_task(
         note_service.send_email_notification,
         note_title=note.title,
-        author=note.author
     )
     return note_dict
 
