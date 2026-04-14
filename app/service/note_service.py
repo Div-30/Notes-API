@@ -1,4 +1,14 @@
+from datetime import datetime
+
+
 notes_db = []
+
+def create_note(note) -> dict:
+    note_dict = note.model_dump()
+    note_dict["id"] = len(notes_db) + 1
+    note_dict["created_at"] = datetime.now()
+    notes_db.append(note_dict)
+    return note_dict
 
 def filter_and_paginated_notes(search: str, limit: int, skip: int):
     filtered = [note for note in notes_db if search.lower() in note['title'].lower()]

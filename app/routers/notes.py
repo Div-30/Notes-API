@@ -15,15 +15,12 @@ def get_note(limit: int = 5, skip: int = 0, search: Optional[str] = ""):
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.NoteResponse)
 def create_note(note: schemas.NoteCreate, background_tasks: BackgroundTasks):
-    note_dict = note.model_dump()
-    note_dict["id"] = len(note_service.notes_db) + 1
-    note_dict["created_at"] = datetime.now()
-    note_service.notes_db.append(note_dict)
+    new_note = note_service.create_note(note)
     background_tasks.add_task(
         note_service.send_email_notification,
-        note_title=note.title,
+        note_title = new_note["title"],
     )
-    return note_dict
+    return new_note
 
 @router.get("/{id}", response_model=schemas.NoteResponse)
 def get_note(id: int):
