@@ -1,6 +1,6 @@
 # Notes API
 
-A lightweight RESTful API for managing notes, built with **FastAPI** and **Python**. Notes are stored in-memory, making this ideal for development, prototyping, and learning purposes.
+A lightweight RESTful API for managing notes, built with **FastAPI** and **Python**.
 
 ## Features
 
